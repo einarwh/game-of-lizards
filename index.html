@@ -8516,56 +8516,311 @@ var _elm_lang$svg$Svg_Attributes$additive = _elm_lang$virtual_dom$VirtualDom$att
 var _elm_lang$svg$Svg_Attributes$accumulate = _elm_lang$virtual_dom$VirtualDom$attribute('accumulate');
 var _elm_lang$svg$Svg_Attributes$accelerate = _elm_lang$virtual_dom$VirtualDom$attribute('accelerate');
 var _elm_lang$svg$Svg_Attributes$accentHeight = _elm_lang$virtual_dom$VirtualDom$attribute('accent-height');
-var _user$project$Main$toRect = function (cell) {
-	var _p0 = cell;
-	var ypos = (_p0._1 * 5) + 10;
-	var xpos = (_p0._0 * 5) + 10;
-	return A2(
-		_elm_lang$svg$Svg$rect,
-		{
+var _user$project$Shape$Point = F2(
+	function (a, b) {
+		return {x: a, y: b};
+	});
+var _user$project$Shape$Line = function (a) {
+	return {lineTo: a};
+};
+var _user$project$Shape$Curve = F3(
+	function (a, b, c) {
+		return {controlPoint1: a, controlPoint2: b, endPoint: c};
+	});
+var _user$project$Shape$PathDef = F2(
+	function (a, b) {
+		return {start: a, segments: b};
+	});
+var _user$project$Shape$CurveSegment = function (a) {
+	return {ctor: 'CurveSegment', _0: a};
+};
+var _user$project$Shape$LineSegment = function (a) {
+	return {ctor: 'LineSegment', _0: a};
+};
+var _user$project$Lizard$curve = F3(
+	function (cp1, cp2, ep) {
+		return _user$project$Shape$CurveSegment(
+			{controlPoint1: cp1, controlPoint2: cp2, endPoint: ep});
+	});
+var _user$project$Lizard$pt = F2(
+	function (x, y) {
+		return {x: x, y: y};
+	});
+var _user$project$Lizard$lizard = {
+	start: A2(_user$project$Lizard$pt, 0, 0),
+	segments: {
+		ctor: '::',
+		_0: A3(
+			_user$project$Lizard$curve,
+			A2(_user$project$Lizard$pt, 2.0e-2, 5.0e-2),
+			A2(_user$project$Lizard$pt, 3.0e-2, 0.12),
+			A2(_user$project$Lizard$pt, 2.5e-2, 0.185)),
+		_1: {
 			ctor: '::',
-			_0: _elm_lang$svg$Svg_Attributes$x(
-				_elm_lang$core$Basics$toString(xpos)),
-			_1: {
+			_0: A3(
+				_user$project$Lizard$curve,
+				A2(_user$project$Lizard$pt, 0.1, 0.12),
+				A2(_user$project$Lizard$pt, 0.2, 8.5e-2),
+				A2(_user$project$Lizard$pt, 0.31, 9.0e-2)),
+			_1: {ctor: '[]'}
+		}
+	}
+};
+var _user$project$Main$toRect = F2(
+	function (_p0, cell) {
+		var _p1 = _p0;
+		var _p4 = _p1._0;
+		var _p3 = _p1._1;
+		var _p2 = cell;
+		var ypos = _p2._1 * _p3;
+		var xpos = _p2._0 * _p4;
+		return A2(
+			_elm_lang$svg$Svg$rect,
+			{
 				ctor: '::',
-				_0: _elm_lang$svg$Svg_Attributes$y(
-					_elm_lang$core$Basics$toString(ypos)),
+				_0: _elm_lang$svg$Svg_Attributes$x(
+					_elm_lang$core$Basics$toString(xpos)),
 				_1: {
 					ctor: '::',
-					_0: _elm_lang$svg$Svg_Attributes$width('3'),
+					_0: _elm_lang$svg$Svg_Attributes$y(
+						_elm_lang$core$Basics$toString(ypos)),
 					_1: {
 						ctor: '::',
-						_0: _elm_lang$svg$Svg_Attributes$height('3'),
+						_0: _elm_lang$svg$Svg_Attributes$width(
+							_elm_lang$core$Basics$toString(_p4)),
 						_1: {
 							ctor: '::',
-							_0: _elm_lang$svg$Svg_Attributes$fill('black'),
-							_1: {ctor: '[]'}
+							_0: _elm_lang$svg$Svg_Attributes$height(
+								_elm_lang$core$Basics$toString(_p3)),
+							_1: {
+								ctor: '::',
+								_0: _elm_lang$svg$Svg_Attributes$fill('black'),
+								_1: {ctor: '[]'}
+							}
 						}
 					}
 				}
-			}
-		},
-		{ctor: '[]'});
+			},
+			{ctor: '[]'});
+	});
+var _user$project$Main$scalePoint = F2(
+	function (_p6, _p5) {
+		var _p7 = _p6;
+		var _p8 = _p5;
+		return {x: _p8.x * _p7._0, y: _p8.y * _p7._1};
+	});
+var _user$project$Main$scaleLine = F2(
+	function (f, _p9) {
+		var _p10 = _p9;
+		return {
+			lineTo: A2(_user$project$Main$scalePoint, f, _p10.lineTo)
+		};
+	});
+var _user$project$Main$scaleCurve = F2(
+	function (f, _p11) {
+		var _p12 = _p11;
+		return {
+			controlPoint1: A2(_user$project$Main$scalePoint, f, _p12.controlPoint1),
+			controlPoint2: A2(_user$project$Main$scalePoint, f, _p12.controlPoint2),
+			endPoint: A2(_user$project$Main$scalePoint, f, _p12.endPoint)
+		};
+	});
+var _user$project$Main$scaleSegment = F2(
+	function (f, ps) {
+		var _p13 = ps;
+		if (_p13.ctor === 'LineSegment') {
+			return _user$project$Shape$LineSegment(
+				A2(_user$project$Main$scaleLine, f, _p13._0));
+		} else {
+			return _user$project$Shape$CurveSegment(
+				A2(_user$project$Main$scaleCurve, f, _p13._0));
+		}
+	});
+var _user$project$Main$scalePath = F2(
+	function (f, _p14) {
+		var _p15 = _p14;
+		return {
+			start: A2(_user$project$Main$scalePoint, f, _p15.start),
+			segments: A2(
+				_elm_lang$core$List$map,
+				_user$project$Main$scaleSegment(f),
+				_p15.segments)
+		};
+	});
+var _user$project$Main$findMaxY = function (cells) {
+	return A2(
+		_elm_lang$core$Maybe$withDefault,
+		-1,
+		_elm_lang$core$List$maximum(
+			A2(
+				_elm_lang$core$List$map,
+				function (_p16) {
+					var _p17 = _p16;
+					return _p17._1;
+				},
+				cells)));
+};
+var _user$project$Main$findMinY = function (cells) {
+	return A2(
+		_elm_lang$core$Maybe$withDefault,
+		-1,
+		_elm_lang$core$List$minimum(
+			A2(
+				_elm_lang$core$List$map,
+				function (_p18) {
+					var _p19 = _p18;
+					return _p19._1;
+				},
+				cells)));
 };
 var _user$project$Main$view = function (model) {
-	var foos = A2(_elm_lang$core$List$map, _user$project$Main$toRect, model);
+	var maxY = _user$project$Main$findMaxY(model);
+	var minY = _user$project$Main$findMinY(model);
+	var cellCount = _elm_lang$core$List$length(model);
+	var foos = A2(
+		_elm_lang$core$List$map,
+		_user$project$Main$toRect(
+			{ctor: '_Tuple2', _0: 6, _1: 6}),
+		model);
 	return A2(
-		_elm_lang$svg$Svg$svg,
+		_elm_lang$html$Html$div,
+		{ctor: '[]'},
 		{
 			ctor: '::',
-			_0: _elm_lang$svg$Svg_Attributes$viewBox('0 0 100 100'),
+			_0: A2(
+				_elm_lang$svg$Svg$svg,
+				{
+					ctor: '::',
+					_0: _elm_lang$svg$Svg_Attributes$viewBox('0 0 192 192'),
+					_1: {
+						ctor: '::',
+						_0: _elm_lang$svg$Svg_Attributes$width('400px'),
+						_1: {ctor: '[]'}
+					}
+				},
+				foos),
 			_1: {
 				ctor: '::',
-				_0: _elm_lang$svg$Svg_Attributes$width('300px'),
-				_1: {ctor: '[]'}
+				_0: A2(
+					_elm_lang$html$Html$div,
+					{ctor: '[]'},
+					{
+						ctor: '::',
+						_0: _elm_lang$svg$Svg$text(
+							_elm_lang$core$Basics$toString(cellCount)),
+						_1: {ctor: '[]'}
+					}),
+				_1: {
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$div,
+						{ctor: '[]'},
+						{
+							ctor: '::',
+							_0: _elm_lang$svg$Svg$text(
+								_elm_lang$core$Basics$toString(minY)),
+							_1: {ctor: '[]'}
+						}),
+					_1: {
+						ctor: '::',
+						_0: A2(
+							_elm_lang$html$Html$div,
+							{ctor: '[]'},
+							{
+								ctor: '::',
+								_0: _elm_lang$svg$Svg$text(
+									_elm_lang$core$Basics$toString(maxY)),
+								_1: {ctor: '[]'}
+							}),
+						_1: {ctor: '[]'}
+					}
+				}
 			}
-		},
-		foos);
+		});
+};
+var _user$project$Main$evolve = function (cells) {
+	var justCell = function (_p20) {
+		var _p21 = _p20;
+		return _p21._0;
+	};
+	var alive = function (_p22) {
+		var _p23 = _p22;
+		return _elm_lang$core$Native_Utils.eq(_p23._1, 3);
+	};
+	var bumpLive = function (_p24) {
+		var _p25 = _p24;
+		var _p27 = _p25._1;
+		var _p26 = _p25._0;
+		return (_elm_lang$core$Native_Utils.eq(_p27, 2) && A2(_elm_lang$core$List$member, _p26, cells)) ? {ctor: '_Tuple2', _0: _p26, _1: 3} : {ctor: '_Tuple2', _0: _p26, _1: _p27};
+	};
+	var inc = F2(
+		function (cell, d) {
+			var _p28 = A2(_elm_lang$core$Dict$get, cell, d);
+			if (_p28.ctor === 'Just') {
+				return A3(_elm_lang$core$Dict$insert, cell, _p28._0 + 1, d);
+			} else {
+				return A3(_elm_lang$core$Dict$insert, cell, 1, d);
+			}
+		});
+	var add = F2(
+		function (_p29, d) {
+			var _p30 = _p29;
+			var _p32 = _p30._1;
+			var _p31 = _p30._0;
+			var ymax = 32;
+			var ybot = A2(_elm_lang$core$Basics_ops['%'], (_p32 + ymax) - 1, ymax);
+			var ytop = A2(_elm_lang$core$Basics_ops['%'], _p32 + 1, ymax);
+			var xmax = 32;
+			var xleft = A2(_elm_lang$core$Basics_ops['%'], (_p31 + xmax) - 1, xmax);
+			var xright = A2(_elm_lang$core$Basics_ops['%'], _p31 + 1, xmax);
+			return A2(
+				inc,
+				{ctor: '_Tuple2', _0: xright, _1: ytop},
+				A2(
+					inc,
+					{ctor: '_Tuple2', _0: xright, _1: _p32},
+					A2(
+						inc,
+						{ctor: '_Tuple2', _0: xright, _1: ybot},
+						A2(
+							inc,
+							{ctor: '_Tuple2', _0: _p31, _1: ytop},
+							A2(
+								inc,
+								{ctor: '_Tuple2', _0: _p31, _1: ybot},
+								A2(
+									inc,
+									{ctor: '_Tuple2', _0: xleft, _1: ytop},
+									A2(
+										inc,
+										{ctor: '_Tuple2', _0: xleft, _1: _p32},
+										A2(
+											inc,
+											{ctor: '_Tuple2', _0: xleft, _1: ybot},
+											d))))))));
+		});
+	var neighbors = A3(_elm_lang$core$List$foldl, add, _elm_lang$core$Dict$empty, cells);
+	var neighborList = _elm_lang$core$Dict$toList(neighbors);
+	var candidates = A2(_elm_lang$core$List$map, bumpLive, neighborList);
+	return A2(
+		_elm_lang$core$List$map,
+		justCell,
+		A2(_elm_lang$core$List$filter, alive, candidates));
 };
 var _user$project$Main$update = F2(
 	function (msg, model) {
-		var _p1 = msg;
-		return {ctor: '_Tuple2', _0: model, _1: _elm_lang$core$Platform_Cmd$none};
+		var _p33 = msg;
+		return {
+			ctor: '_Tuple2',
+			_0: _user$project$Main$evolve(model),
+			_1: _elm_lang$core$Platform_Cmd$none
+		};
+	});
+var _user$project$Main$translate = F2(
+	function (_p35, _p34) {
+		var _p36 = _p35;
+		var _p37 = _p34;
+		return {ctor: '_Tuple2', _0: _p36._0 + _p37._0, _1: _p36._1 + _p37._1};
 	});
 var _user$project$Main$copperhead = {
 	ctor: '::',
@@ -8680,13 +8935,21 @@ var _user$project$Main$copperhead = {
 		}
 	}
 };
-var _user$project$Main$init = {ctor: '_Tuple2', _0: _user$project$Main$copperhead, _1: _elm_lang$core$Platform_Cmd$none};
+var _user$project$Main$init = {
+	ctor: '_Tuple2',
+	_0: A2(
+		_elm_lang$core$List$map,
+		_user$project$Main$translate(
+			{ctor: '_Tuple2', _0: 10, _1: 0}),
+		_user$project$Main$copperhead),
+	_1: _elm_lang$core$Platform_Cmd$none
+};
 var _user$project$Main$Tick = {ctor: 'Tick'};
 var _user$project$Main$subscriptions = function (model) {
 	return A2(
 		_elm_lang$core$Time$every,
-		_elm_lang$core$Time$second,
-		function (_p2) {
+		100 * _elm_lang$core$Time$millisecond,
+		function (_p38) {
 			return _user$project$Main$Tick;
 		});
 };
