@@ -8521,7 +8521,7 @@ var _user$project$Shape$Point = F2(
 		return {x: a, y: b};
 	});
 var _user$project$Shape$Line = function (a) {
-	return {lineTo: a};
+	return {targetPoint: a};
 };
 var _user$project$Shape$Curve = F3(
 	function (a, b, c) {
@@ -8537,7 +8537,11 @@ var _user$project$Shape$CurveSegment = function (a) {
 var _user$project$Shape$LineSegment = function (a) {
 	return {ctor: 'LineSegment', _0: a};
 };
-var _user$project$Lizard$curve = F3(
+var _user$project$Lizard$lineto = function (p) {
+	return _user$project$Shape$LineSegment(
+		{targetPoint: p});
+};
+var _user$project$Lizard$curveto = F3(
 	function (cp1, cp2, ep) {
 		return _user$project$Shape$CurveSegment(
 			{controlPoint1: cp1, controlPoint2: cp2, endPoint: ep});
@@ -8551,66 +8555,271 @@ var _user$project$Lizard$lizard = {
 	segments: {
 		ctor: '::',
 		_0: A3(
-			_user$project$Lizard$curve,
+			_user$project$Lizard$curveto,
 			A2(_user$project$Lizard$pt, 2.0e-2, 5.0e-2),
 			A2(_user$project$Lizard$pt, 3.0e-2, 0.12),
 			A2(_user$project$Lizard$pt, 2.5e-2, 0.185)),
 		_1: {
 			ctor: '::',
 			_0: A3(
-				_user$project$Lizard$curve,
-				A2(_user$project$Lizard$pt, 0.1, 0.12),
-				A2(_user$project$Lizard$pt, 0.2, 8.5e-2),
+				_user$project$Lizard$curveto,
+				A2(_user$project$Lizard$pt, 8.0e-2, 0.12),
+				A2(_user$project$Lizard$pt, 0.2, 0.105),
 				A2(_user$project$Lizard$pt, 0.31, 9.0e-2)),
-			_1: {ctor: '[]'}
-		}
-	}
-};
-var _user$project$Main$toSvg = F2(
-	function (_p0, cell) {
-		var _p1 = _p0;
-		var _p4 = _p1._0;
-		var _p3 = _p1._1;
-		var _p2 = cell;
-		var ypos = _p2._1 * _p3;
-		var xpos = _p2._0 * _p4;
-		return A2(
-			_elm_lang$svg$Svg$rect,
-			{
+			_1: {
 				ctor: '::',
-				_0: _elm_lang$svg$Svg_Attributes$x(
-					_elm_lang$core$Basics$toString(xpos)),
+				_0: _user$project$Lizard$lineto(
+					A2(_user$project$Lizard$pt, 0.31, -0.313)),
 				_1: {
 					ctor: '::',
-					_0: _elm_lang$svg$Svg_Attributes$y(
-						_elm_lang$core$Basics$toString(ypos)),
+					_0: A3(
+						_user$project$Lizard$curveto,
+						A2(_user$project$Lizard$pt, 0.45, -0.17),
+						A2(_user$project$Lizard$pt, 0.5, -0.1),
+						A2(_user$project$Lizard$pt, 0.63, 6.5e-2)),
 					_1: {
 						ctor: '::',
-						_0: _elm_lang$svg$Svg_Attributes$width(
-							_elm_lang$core$Basics$toString(_p4)),
+						_0: A3(
+							_user$project$Lizard$curveto,
+							A2(_user$project$Lizard$pt, 0.7, 4.0e-2),
+							A2(_user$project$Lizard$pt, 0.78, 1.0e-2),
+							A2(_user$project$Lizard$pt, 0.85, 0.0)),
 						_1: {
 							ctor: '::',
-							_0: _elm_lang$svg$Svg_Attributes$height(
-								_elm_lang$core$Basics$toString(_p3)),
+							_0: A3(
+								_user$project$Lizard$curveto,
+								A2(_user$project$Lizard$pt, 0.7, -7.0e-2),
+								A2(_user$project$Lizard$pt, 0.563, -0.18),
+								A2(_user$project$Lizard$pt, 0.563, -0.313)),
 							_1: {
 								ctor: '::',
-								_0: _elm_lang$svg$Svg_Attributes$fill('black'),
-								_1: {ctor: '[]'}
+								_0: A3(
+									_user$project$Lizard$curveto,
+									A2(_user$project$Lizard$pt, 0.68, -0.31),
+									A2(_user$project$Lizard$pt, 0.78, -0.41),
+									A2(_user$project$Lizard$pt, 0.813, -0.375)),
+								_1: {
+									ctor: '::',
+									_0: A3(
+										_user$project$Lizard$curveto,
+										A2(_user$project$Lizard$pt, 0.792, -0.333),
+										A2(_user$project$Lizard$pt, 0.771, -0.292),
+										A2(_user$project$Lizard$pt, 0.75, -0.25)),
+									_1: {
+										ctor: '::',
+										_0: _user$project$Lizard$lineto(
+											A2(_user$project$Lizard$pt, 1.0, 0.0)),
+										_1: {
+											ctor: '::',
+											_0: _user$project$Lizard$lineto(
+												A2(_user$project$Lizard$pt, 0.75, 0.25)),
+											_1: {
+												ctor: '::',
+												_0: _user$project$Lizard$lineto(
+													A2(_user$project$Lizard$pt, 0.87, 0.5)),
+												_1: {
+													ctor: '::',
+													_0: A3(
+														_user$project$Lizard$curveto,
+														A2(_user$project$Lizard$pt, 0.95, 0.675),
+														A2(_user$project$Lizard$pt, 1.06, 0.795),
+														A2(_user$project$Lizard$pt, 1.27, 0.84)),
+													_1: {
+														ctor: '::',
+														_0: A3(
+															_user$project$Lizard$curveto,
+															A2(_user$project$Lizard$pt, 1.2, 0.94),
+															A2(_user$project$Lizard$pt, 1.1, 0.98),
+															A2(_user$project$Lizard$pt, 1.0, 1.0)),
+														_1: {
+															ctor: '::',
+															_0: A3(
+																_user$project$Lizard$curveto,
+																A2(_user$project$Lizard$pt, 0.98, 0.9),
+																A2(_user$project$Lizard$pt, 0.94, 0.8),
+																A2(_user$project$Lizard$pt, 0.86, 0.73)),
+															_1: {
+																ctor: '::',
+																_0: _user$project$Lizard$lineto(
+																	A2(_user$project$Lizard$pt, 0.25, 1.25)),
+																_1: {
+																	ctor: '::',
+																	_0: _user$project$Lizard$lineto(
+																		A2(_user$project$Lizard$pt, 0.0, 1.0)),
+																	_1: {
+																		ctor: '::',
+																		_0: _user$project$Lizard$lineto(
+																			A2(_user$project$Lizard$pt, 0.25, 0.75)),
+																		_1: {
+																			ctor: '::',
+																			_0: A3(
+																				_user$project$Lizard$curveto,
+																				A2(_user$project$Lizard$pt, 0.3, 0.78),
+																				A2(_user$project$Lizard$pt, 0.35, 0.83),
+																				A2(_user$project$Lizard$pt, 0.375, 0.813)),
+																			_1: {
+																				ctor: '::',
+																				_0: A3(
+																					_user$project$Lizard$curveto,
+																					A2(_user$project$Lizard$pt, 0.41, 0.78),
+																					A2(_user$project$Lizard$pt, 0.31, 0.68),
+																					A2(_user$project$Lizard$pt, 0.313, 0.563)),
+																				_1: {
+																					ctor: '::',
+																					_0: A3(
+																						_user$project$Lizard$curveto,
+																						A2(_user$project$Lizard$pt, 0.18, 0.563),
+																						A2(_user$project$Lizard$pt, 7.0e-2, 0.7),
+																						A2(_user$project$Lizard$pt, 0.0, 0.85)),
+																					_1: {
+																						ctor: '::',
+																						_0: A3(
+																							_user$project$Lizard$curveto,
+																							A2(_user$project$Lizard$pt, -1.0e-2, 0.78),
+																							A2(_user$project$Lizard$pt, -4.0e-2, 0.7),
+																							A2(_user$project$Lizard$pt, -6.5e-2, 0.63)),
+																						_1: {
+																							ctor: '::',
+																							_0: A3(
+																								_user$project$Lizard$curveto,
+																								A2(_user$project$Lizard$pt, 0.1, 0.5),
+																								A2(_user$project$Lizard$pt, 0.17, 0.45),
+																								A2(_user$project$Lizard$pt, 0.313, 0.31)),
+																							_1: {
+																								ctor: '::',
+																								_0: _user$project$Lizard$lineto(
+																									A2(_user$project$Lizard$pt, -9.0e-2, 0.31)),
+																								_1: {
+																									ctor: '::',
+																									_0: A3(
+																										_user$project$Lizard$curveto,
+																										A2(_user$project$Lizard$pt, -0.105, 0.2),
+																										A2(_user$project$Lizard$pt, -0.12, 8.0e-2),
+																										A2(_user$project$Lizard$pt, -0.185, 2.5e-2)),
+																									_1: {
+																										ctor: '::',
+																										_0: A3(
+																											_user$project$Lizard$curveto,
+																											A2(_user$project$Lizard$pt, -0.12, 3.0e-2),
+																											A2(_user$project$Lizard$pt, -5.0e-2, 2.0e-2),
+																											A2(_user$project$Lizard$pt, 0.0, 0.0)),
+																										_1: {ctor: '[]'}
+																									}
+																								}
+																							}
+																						}
+																					}
+																				}
+																			}
+																		}
+																	}
+																}
+															}
+														}
+													}
+												}
+											}
+										}
+									}
+								}
 							}
 						}
 					}
 				}
-			},
-			{ctor: '[]'});
-	});
+			}
+		}
+	}
+};
+var _user$project$Main$pathToSvg = function (_p0) {
+	var _p1 = _p0;
+	var toStr = function (_p2) {
+		var _p3 = _p2;
+		return A2(
+			_elm_lang$core$Basics_ops['++'],
+			_elm_lang$core$Basics$toString(_p3.x),
+			A2(
+				_elm_lang$core$Basics_ops['++'],
+				' ',
+				_elm_lang$core$Basics$toString(_p3.y)));
+	};
+	var toLine = function (_p4) {
+		var _p5 = _p4;
+		return A2(
+			_elm_lang$core$Basics_ops['++'],
+			'L ',
+			toStr(_p5.targetPoint));
+	};
+	var toCurve = function (_p6) {
+		var _p7 = _p6;
+		var ep = toStr(_p7.endPoint);
+		var cp2 = toStr(_p7.controlPoint2);
+		var cp1 = toStr(_p7.controlPoint1);
+		return A2(
+			_elm_lang$core$Basics_ops['++'],
+			'C ',
+			A2(
+				_elm_lang$core$Basics_ops['++'],
+				cp1,
+				A2(
+					_elm_lang$core$Basics_ops['++'],
+					' ',
+					A2(
+						_elm_lang$core$Basics_ops['++'],
+						cp2,
+						A2(_elm_lang$core$Basics_ops['++'], ' ', ep)))));
+	};
+	var segToStr = function (seg) {
+		var _p8 = seg;
+		if (_p8.ctor === 'LineSegment') {
+			return toLine(_p8._0);
+		} else {
+			return toCurve(_p8._0);
+		}
+	};
+	var segs = A2(
+		_elm_lang$core$String$join,
+		' ',
+		A2(_elm_lang$core$List$map, segToStr, _p1.segments));
+	var st = toStr(_p1.start);
+	var dval = A2(
+		_elm_lang$core$Basics_ops['++'],
+		'M',
+		A2(
+			_elm_lang$core$Basics_ops['++'],
+			st,
+			A2(
+				_elm_lang$core$Basics_ops['++'],
+				' ',
+				A2(_elm_lang$core$Basics_ops['++'], segs, ' Z'))));
+	return A2(
+		_elm_lang$svg$Svg$path,
+		{
+			ctor: '::',
+			_0: _elm_lang$svg$Svg_Attributes$stroke('white'),
+			_1: {
+				ctor: '::',
+				_0: _elm_lang$svg$Svg_Attributes$strokeWidth('0.3'),
+				_1: {
+					ctor: '::',
+					_0: _elm_lang$svg$Svg_Attributes$fill('black'),
+					_1: {
+						ctor: '::',
+						_0: _elm_lang$svg$Svg_Attributes$d(dval),
+						_1: {ctor: '[]'}
+					}
+				}
+			}
+		},
+		{ctor: '[]'});
+};
 var _user$project$Main$toRect = F2(
-	function (_p5, cell) {
-		var _p6 = _p5;
-		var _p9 = _p6._0;
-		var _p8 = _p6._1;
-		var _p7 = cell;
-		var ypos = _p7._1 * _p8;
-		var xpos = _p7._0 * _p9;
+	function (_p9, cell) {
+		var _p10 = _p9;
+		var _p13 = _p10._0;
+		var _p12 = _p10._1;
+		var _p11 = cell;
+		var ypos = _p11._1 * _p12;
+		var xpos = _p11._0 * _p13;
 		return A2(
 			_elm_lang$svg$Svg$rect,
 			{
@@ -8624,11 +8833,11 @@ var _user$project$Main$toRect = F2(
 					_1: {
 						ctor: '::',
 						_0: _elm_lang$svg$Svg_Attributes$width(
-							_elm_lang$core$Basics$toString(_p9)),
+							_elm_lang$core$Basics$toString(_p13)),
 						_1: {
 							ctor: '::',
 							_0: _elm_lang$svg$Svg_Attributes$height(
-								_elm_lang$core$Basics$toString(_p8)),
+								_elm_lang$core$Basics$toString(_p12)),
 							_1: {
 								ctor: '::',
 								_0: _elm_lang$svg$Svg_Attributes$fill('black'),
@@ -8641,91 +8850,91 @@ var _user$project$Main$toRect = F2(
 			{ctor: '[]'});
 	});
 var _user$project$Main$movePoint = F2(
-	function (_p11, _p10) {
-		var _p12 = _p11;
-		var _p13 = _p10;
-		return {x: _p13.x * _p12._0, y: _p13.y * _p12._1};
+	function (_p15, _p14) {
+		var _p16 = _p15;
+		var _p17 = _p14;
+		return {x: _p17.x + _p16._0, y: _p17.y + _p16._1};
 	});
 var _user$project$Main$moveLine = F2(
-	function (f, _p14) {
-		var _p15 = _p14;
+	function (f, _p18) {
+		var _p19 = _p18;
 		return {
-			lineTo: A2(_user$project$Main$movePoint, f, _p15.lineTo)
+			targetPoint: A2(_user$project$Main$movePoint, f, _p19.targetPoint)
 		};
 	});
 var _user$project$Main$moveCurve = F2(
-	function (f, _p16) {
-		var _p17 = _p16;
+	function (f, _p20) {
+		var _p21 = _p20;
 		return {
-			controlPoint1: A2(_user$project$Main$movePoint, f, _p17.controlPoint1),
-			controlPoint2: A2(_user$project$Main$movePoint, f, _p17.controlPoint2),
-			endPoint: A2(_user$project$Main$movePoint, f, _p17.endPoint)
+			controlPoint1: A2(_user$project$Main$movePoint, f, _p21.controlPoint1),
+			controlPoint2: A2(_user$project$Main$movePoint, f, _p21.controlPoint2),
+			endPoint: A2(_user$project$Main$movePoint, f, _p21.endPoint)
 		};
 	});
 var _user$project$Main$moveSegment = F2(
 	function (f, ps) {
-		var _p18 = ps;
-		if (_p18.ctor === 'LineSegment') {
+		var _p22 = ps;
+		if (_p22.ctor === 'LineSegment') {
 			return _user$project$Shape$LineSegment(
-				A2(_user$project$Main$moveLine, f, _p18._0));
+				A2(_user$project$Main$moveLine, f, _p22._0));
 		} else {
 			return _user$project$Shape$CurveSegment(
-				A2(_user$project$Main$moveCurve, f, _p18._0));
+				A2(_user$project$Main$moveCurve, f, _p22._0));
 		}
 	});
 var _user$project$Main$movePath = F2(
-	function (f, _p19) {
-		var _p20 = _p19;
+	function (f, _p23) {
+		var _p24 = _p23;
 		return {
-			start: A2(_user$project$Main$movePoint, f, _p20.start),
+			start: A2(_user$project$Main$movePoint, f, _p24.start),
 			segments: A2(
 				_elm_lang$core$List$map,
 				_user$project$Main$moveSegment(f),
-				_p20.segments)
+				_p24.segments)
 		};
 	});
 var _user$project$Main$scalePoint = F2(
-	function (_p22, _p21) {
-		var _p23 = _p22;
-		var _p24 = _p21;
-		return {x: _p24.x * _p23._0, y: _p24.y * _p23._1};
+	function (_p26, _p25) {
+		var _p27 = _p26;
+		var _p28 = _p25;
+		return {x: _p28.x * _p27._0, y: _p28.y * _p27._1};
 	});
 var _user$project$Main$scaleLine = F2(
-	function (f, _p25) {
-		var _p26 = _p25;
+	function (f, _p29) {
+		var _p30 = _p29;
 		return {
-			lineTo: A2(_user$project$Main$scalePoint, f, _p26.lineTo)
+			targetPoint: A2(_user$project$Main$scalePoint, f, _p30.targetPoint)
 		};
 	});
 var _user$project$Main$scaleCurve = F2(
-	function (f, _p27) {
-		var _p28 = _p27;
+	function (f, _p31) {
+		var _p32 = _p31;
 		return {
-			controlPoint1: A2(_user$project$Main$scalePoint, f, _p28.controlPoint1),
-			controlPoint2: A2(_user$project$Main$scalePoint, f, _p28.controlPoint2),
-			endPoint: A2(_user$project$Main$scalePoint, f, _p28.endPoint)
+			controlPoint1: A2(_user$project$Main$scalePoint, f, _p32.controlPoint1),
+			controlPoint2: A2(_user$project$Main$scalePoint, f, _p32.controlPoint2),
+			endPoint: A2(_user$project$Main$scalePoint, f, _p32.endPoint)
 		};
 	});
 var _user$project$Main$scaleSegment = F2(
 	function (f, ps) {
-		var _p29 = ps;
-		if (_p29.ctor === 'LineSegment') {
+		var _p33 = ps;
+		if (_p33.ctor === 'LineSegment') {
 			return _user$project$Shape$LineSegment(
-				A2(_user$project$Main$scaleLine, f, _p29._0));
+				A2(_user$project$Main$scaleLine, f, _p33._0));
 		} else {
 			return _user$project$Shape$CurveSegment(
-				A2(_user$project$Main$scaleCurve, f, _p29._0));
+				A2(_user$project$Main$scaleCurve, f, _p33._0));
 		}
 	});
 var _user$project$Main$scalePath = F2(
-	function (f, _p30) {
-		var _p31 = _p30;
+	function (f, _p34) {
+		var _p35 = _p34;
 		return {
-			start: A2(_user$project$Main$scalePoint, f, _p31.start),
+			start: A2(_user$project$Main$scalePoint, f, _p35.start),
 			segments: A2(
 				_elm_lang$core$List$map,
 				_user$project$Main$scaleSegment(f),
-				_p31.segments)
+				_p35.segments)
 		};
 	});
 var _user$project$Main$findMaxY = function (cells) {
@@ -8735,9 +8944,9 @@ var _user$project$Main$findMaxY = function (cells) {
 		_elm_lang$core$List$maximum(
 			A2(
 				_elm_lang$core$List$map,
-				function (_p32) {
-					var _p33 = _p32;
-					return _p33._1;
+				function (_p36) {
+					var _p37 = _p36;
+					return _p37._1;
 				},
 				cells)));
 };
@@ -8748,133 +8957,68 @@ var _user$project$Main$findMinY = function (cells) {
 		_elm_lang$core$List$minimum(
 			A2(
 				_elm_lang$core$List$map,
-				function (_p34) {
-					var _p35 = _p34;
-					return _p35._1;
+				function (_p38) {
+					var _p39 = _p38;
+					return _p39._1;
 				},
 				cells)));
 };
-var _user$project$Main$view = function (model) {
-	var maxY = _user$project$Main$findMaxY(model);
-	var minY = _user$project$Main$findMinY(model);
-	var cellCount = _elm_lang$core$List$length(model);
-	var foos = A2(
-		_elm_lang$core$List$map,
-		_user$project$Main$toRect(
-			{ctor: '_Tuple2', _0: 6, _1: 6}),
-		model);
-	return A2(
-		_elm_lang$html$Html$div,
-		{ctor: '[]'},
-		{
-			ctor: '::',
-			_0: A2(
-				_elm_lang$svg$Svg$svg,
-				{
-					ctor: '::',
-					_0: _elm_lang$svg$Svg_Attributes$viewBox('0 0 192 192'),
-					_1: {
-						ctor: '::',
-						_0: _elm_lang$svg$Svg_Attributes$width('400px'),
-						_1: {ctor: '[]'}
-					}
-				},
-				foos),
-			_1: {
-				ctor: '::',
-				_0: A2(
-					_elm_lang$html$Html$div,
-					{ctor: '[]'},
-					{
-						ctor: '::',
-						_0: _elm_lang$svg$Svg$text(
-							_elm_lang$core$Basics$toString(cellCount)),
-						_1: {ctor: '[]'}
-					}),
-				_1: {
-					ctor: '::',
-					_0: A2(
-						_elm_lang$html$Html$div,
-						{ctor: '[]'},
-						{
-							ctor: '::',
-							_0: _elm_lang$svg$Svg$text(
-								_elm_lang$core$Basics$toString(minY)),
-							_1: {ctor: '[]'}
-						}),
-					_1: {
-						ctor: '::',
-						_0: A2(
-							_elm_lang$html$Html$div,
-							{ctor: '[]'},
-							{
-								ctor: '::',
-								_0: _elm_lang$svg$Svg$text(
-									_elm_lang$core$Basics$toString(maxY)),
-								_1: {ctor: '[]'}
-							}),
-						_1: {ctor: '[]'}
-					}
-				}
-			}
-		});
-};
 var _user$project$Main$evolve = function (cells) {
-	var justCell = function (_p36) {
-		var _p37 = _p36;
-		return _p37._0;
-	};
-	var alive = function (_p38) {
-		var _p39 = _p38;
-		return _elm_lang$core$Native_Utils.eq(_p39._1, 3);
-	};
-	var bumpLive = function (_p40) {
+	var justCell = function (_p40) {
 		var _p41 = _p40;
-		var _p43 = _p41._1;
-		var _p42 = _p41._0;
-		return (_elm_lang$core$Native_Utils.eq(_p43, 2) && A2(_elm_lang$core$List$member, _p42, cells)) ? {ctor: '_Tuple2', _0: _p42, _1: 3} : {ctor: '_Tuple2', _0: _p42, _1: _p43};
+		return _p41._0;
+	};
+	var alive = function (_p42) {
+		var _p43 = _p42;
+		return _elm_lang$core$Native_Utils.eq(_p43._1, 3);
+	};
+	var bumpLive = function (_p44) {
+		var _p45 = _p44;
+		var _p47 = _p45._1;
+		var _p46 = _p45._0;
+		return (_elm_lang$core$Native_Utils.eq(_p47, 2) && A2(_elm_lang$core$List$member, _p46, cells)) ? {ctor: '_Tuple2', _0: _p46, _1: 3} : {ctor: '_Tuple2', _0: _p46, _1: _p47};
 	};
 	var inc = F2(
 		function (cell, d) {
-			var _p44 = A2(_elm_lang$core$Dict$get, cell, d);
-			if (_p44.ctor === 'Just') {
-				return A3(_elm_lang$core$Dict$insert, cell, _p44._0 + 1, d);
+			var _p48 = A2(_elm_lang$core$Dict$get, cell, d);
+			if (_p48.ctor === 'Just') {
+				return A3(_elm_lang$core$Dict$insert, cell, _p48._0 + 1, d);
 			} else {
 				return A3(_elm_lang$core$Dict$insert, cell, 1, d);
 			}
 		});
 	var add = F2(
-		function (_p45, d) {
-			var _p46 = _p45;
-			var _p48 = _p46._1;
-			var _p47 = _p46._0;
-			var ymax = 32;
-			var ybot = A2(_elm_lang$core$Basics_ops['%'], (_p48 + ymax) - 1, ymax);
-			var ytop = A2(_elm_lang$core$Basics_ops['%'], _p48 + 1, ymax);
-			var xmax = 32;
-			var xleft = A2(_elm_lang$core$Basics_ops['%'], (_p47 + xmax) - 1, xmax);
-			var xright = A2(_elm_lang$core$Basics_ops['%'], _p47 + 1, xmax);
+		function (_p49, d) {
+			var _p50 = _p49;
+			var _p52 = _p50._1;
+			var _p51 = _p50._0;
+			var ymax = 20;
+			var ybot = A2(_elm_lang$core$Basics_ops['%'], (_p52 + ymax) - 1, ymax);
+			var ytop = A2(_elm_lang$core$Basics_ops['%'], _p52 + 1, ymax);
+			var xmax = 20;
+			var xleft = A2(_elm_lang$core$Basics_ops['%'], (_p51 + xmax) - 1, xmax);
+			var xright = A2(_elm_lang$core$Basics_ops['%'], _p51 + 1, xmax);
 			return A2(
 				inc,
 				{ctor: '_Tuple2', _0: xright, _1: ytop},
 				A2(
 					inc,
-					{ctor: '_Tuple2', _0: xright, _1: _p48},
+					{ctor: '_Tuple2', _0: xright, _1: _p52},
 					A2(
 						inc,
 						{ctor: '_Tuple2', _0: xright, _1: ybot},
 						A2(
 							inc,
-							{ctor: '_Tuple2', _0: _p47, _1: ytop},
+							{ctor: '_Tuple2', _0: _p51, _1: ytop},
 							A2(
 								inc,
-								{ctor: '_Tuple2', _0: _p47, _1: ybot},
+								{ctor: '_Tuple2', _0: _p51, _1: ybot},
 								A2(
 									inc,
 									{ctor: '_Tuple2', _0: xleft, _1: ytop},
 									A2(
 										inc,
-										{ctor: '_Tuple2', _0: xleft, _1: _p48},
+										{ctor: '_Tuple2', _0: xleft, _1: _p52},
 										A2(
 											inc,
 											{ctor: '_Tuple2', _0: xleft, _1: ybot},
@@ -8890,7 +9034,7 @@ var _user$project$Main$evolve = function (cells) {
 };
 var _user$project$Main$update = F2(
 	function (msg, model) {
-		var _p49 = msg;
+		var _p53 = msg;
 		return {
 			ctor: '_Tuple2',
 			_0: _user$project$Main$evolve(model),
@@ -8898,10 +9042,10 @@ var _user$project$Main$update = F2(
 		};
 	});
 var _user$project$Main$translate = F2(
-	function (_p51, _p50) {
-		var _p52 = _p51;
-		var _p53 = _p50;
-		return {ctor: '_Tuple2', _0: _p52._0 + _p53._0, _1: _p52._1 + _p53._1};
+	function (_p55, _p54) {
+		var _p56 = _p55;
+		var _p57 = _p54;
+		return {ctor: '_Tuple2', _0: _p56._0 + _p57._0, _1: _p56._1 + _p57._1};
 	});
 var _user$project$Main$copperhead = {
 	ctor: '::',
@@ -9025,12 +9169,90 @@ var _user$project$Main$init = {
 		_user$project$Main$copperhead),
 	_1: _elm_lang$core$Platform_Cmd$none
 };
+var _user$project$Main$cellSize = {ctor: '_Tuple2', _0: 20, _1: 20};
+var _user$project$Main$scaledLizard = A2(_user$project$Main$scalePath, _user$project$Main$cellSize, _user$project$Lizard$lizard);
+var _user$project$Main$toSvg = F2(
+	function (_p58, cell) {
+		var _p59 = _p58;
+		var _p60 = cell;
+		var ypos = _elm_lang$core$Basics$toFloat(_p60._1) * _p59._1;
+		var xpos = _elm_lang$core$Basics$toFloat(_p60._0) * _p59._0;
+		var movedLizard = A2(
+			_user$project$Main$movePath,
+			{ctor: '_Tuple2', _0: xpos, _1: ypos},
+			_user$project$Main$scaledLizard);
+		return _user$project$Main$pathToSvg(movedLizard);
+	});
+var _user$project$Main$view = function (model) {
+	var maxY = _user$project$Main$findMaxY(model);
+	var minY = _user$project$Main$findMinY(model);
+	var cellCount = _elm_lang$core$List$length(model);
+	var elements = A2(
+		_elm_lang$core$List$map,
+		_user$project$Main$toSvg(_user$project$Main$cellSize),
+		model);
+	return A2(
+		_elm_lang$html$Html$div,
+		{ctor: '[]'},
+		{
+			ctor: '::',
+			_0: A2(
+				_elm_lang$svg$Svg$svg,
+				{
+					ctor: '::',
+					_0: _elm_lang$svg$Svg_Attributes$viewBox('0 0 396 396'),
+					_1: {
+						ctor: '::',
+						_0: _elm_lang$svg$Svg_Attributes$width('600px'),
+						_1: {ctor: '[]'}
+					}
+				},
+				elements),
+			_1: {
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$div,
+					{ctor: '[]'},
+					{
+						ctor: '::',
+						_0: _elm_lang$svg$Svg$text(
+							_elm_lang$core$Basics$toString(cellCount)),
+						_1: {ctor: '[]'}
+					}),
+				_1: {
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$div,
+						{ctor: '[]'},
+						{
+							ctor: '::',
+							_0: _elm_lang$svg$Svg$text(
+								_elm_lang$core$Basics$toString(minY)),
+							_1: {ctor: '[]'}
+						}),
+					_1: {
+						ctor: '::',
+						_0: A2(
+							_elm_lang$html$Html$div,
+							{ctor: '[]'},
+							{
+								ctor: '::',
+								_0: _elm_lang$svg$Svg$text(
+									_elm_lang$core$Basics$toString(maxY)),
+								_1: {ctor: '[]'}
+							}),
+						_1: {ctor: '[]'}
+					}
+				}
+			}
+		});
+};
 var _user$project$Main$Tick = {ctor: 'Tick'};
 var _user$project$Main$subscriptions = function (model) {
 	return A2(
 		_elm_lang$core$Time$every,
 		100 * _elm_lang$core$Time$millisecond,
-		function (_p54) {
+		function (_p61) {
 			return _user$project$Main$Tick;
 		});
 };

@@ -17,6 +17,9 @@ main =
 type alias LiveCell = (Int, Int)
 type alias Model = List LiveCell
 
+cellSize : (Float, Float) 
+cellSize = (20, 20)
+
 copperhead : Model 
 copperhead =  
   [ (2,0), (3,0)
@@ -30,6 +33,7 @@ copperhead =
   , (1,10), (4,10)
   , (1,11), (4,11)
   , (2,12), (3,12) ]
+
 
 translate : (Int, Int) -> LiveCell -> LiveCell 
 translate (xoffset, yoffset) (x, y) = 
@@ -53,8 +57,8 @@ evolve cells =
     add : LiveCell -> Dict LiveCell Int -> Dict LiveCell Int 
     add (x,y) d = 
       let 
-        xmax = 32
-        ymax = 32
+        xmax = 20
+        ymax = 20
         xleft = (x + xmax - 1) % xmax
         xright = (x + 1) % xmax 
         ybot = (y + ymax - 1) % ymax 
@@ -105,8 +109,8 @@ scalePoint (xf, yf) { x, y } =
   { x = x * xf, y = y * yf }
 
 scaleLine : (Float, Float) -> Line -> Line 
-scaleLine f { lineTo } = 
-  { lineTo = scalePoint f lineTo }
+scaleLine f { targetPoint } = 
+  { targetPoint = scalePoint f targetPoint }
 
 scaleCurve : (Float, Float) -> Curve -> Curve 
 scaleCurve f { controlPoint1, controlPoint2, endPoint } = 
@@ -126,12 +130,12 @@ scalePath f { start, segments } =
   , segments = segments |> List.map (scaleSegment f) }
 
 movePoint : (Float, Float) -> Point -> Point 
-movePoint (xf, yf) { x, y } = 
-  { x = x * xf, y = y * yf }
+movePoint (dx, dy) { x, y } = 
+  { x = x + dx, y = y + dy }
 
 moveLine : (Float, Float) -> Line -> Line 
-moveLine f { lineTo } = 
-  { lineTo = movePoint f lineTo }
+moveLine f { targetPoint } = 
+  { targetPoint = movePoint f targetPoint }
 
 moveCurve : (Float, Float) -> Curve -> Curve 
 moveCurve f { controlPoint1, controlPoint2, endPoint } = 
@@ -150,6 +154,9 @@ movePath f { start, segments } =
   { start = movePoint f start
   , segments = segments |> List.map (moveSegment f) }
 
+scaledLizard : PathDef 
+scaledLizard = scalePath cellSize lizard
+
 toRect : (Int, Int) -> LiveCell -> Svg.Svg msg
 toRect (w, h) cell = 
   case cell of 
@@ -164,30 +171,61 @@ toRect (w, h) cell =
                  , height (toString h)
                  , fill "black" ] []
 
-toSvg : (Int, Int) -> LiveCell -> Svg.Svg msg
+pathToSvg : PathDef -> Svg.Svg msg 
+pathToSvg { start, segments } =
+  let 
+    toStr : Point -> String 
+    toStr {x, y} = 
+      (toString x) ++ " " ++ (toString y)
+    toLine : Line -> String
+    toLine { targetPoint } = 
+      "L " ++ (toStr targetPoint)
+    toCurve : Curve -> String 
+    toCurve { controlPoint1, controlPoint2, endPoint } = 
+      let
+        cp1 = toStr controlPoint1
+        cp2 = toStr controlPoint2 
+        ep = toStr endPoint 
+      in 
+        "C " ++ cp1 ++ " " ++ cp2 ++ " " ++ ep 
+    segToStr : PathSegment -> String 
+    segToStr seg = 
+      case seg of 
+        LineSegment l -> toLine l
+        CurveSegment c -> toCurve c
+    st = toStr start 
+    segs : String
+    segs = segments |> List.map segToStr |> String.join " "
+    dval = "M" ++ st ++ " " ++ segs ++ " Z"
+  in
+    Svg.path 
+      [ stroke "white"
+      , strokeWidth "0.3"
+      , fill "black"
+      , d dval ] []  
+
+toSvg : (Float, Float) -> LiveCell -> Svg.Svg msg
 toSvg (w, h) cell = 
   case cell of 
     (xval, yval) -> 
       let 
-        xpos = xval * w 
-        ypos = yval * h 
+        xpos = toFloat xval * w 
+        ypos = toFloat yval * h 
+        movedLizard = movePath (xpos, ypos) scaledLizard
       in 
-        Svg.rect [ x (toString xpos)
-                 , y (toString ypos)
-                 , width (toString w)
-                 , height (toString h)
-                 , fill "black" ] []
+        pathToSvg movedLizard
 
 view : Model -> Html Msg
 view model =
   let
-    foos = List.map (toRect (6, 6)) model 
+    --foos = List.map (toRect (6, 6)) model 
+    elements = List.map (toSvg cellSize) model 
     cellCount = List.length model
     minY = findMinY model 
     maxY = findMaxY model 
   in
     div [] [
-      svg [ viewBox "0 0 192 192", width "400px" ] foos
+      svg [ viewBox "0 0 396 396", width "600px" ] elements
     , div [] [ text (toString cellCount) ]
     , div [] [ text (toString minY) ]
     , div [] [ text (toString maxY) ]

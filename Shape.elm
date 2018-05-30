@@ -3,7 +3,7 @@ module Shape exposing (..)
 type alias Point = { x : Float, y : Float }
 
 type alias Line = 
-  { lineTo : Point }
+  { targetPoint : Point }
 
 type alias Curve = 
   { controlPoint1 : Point
