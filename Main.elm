@@ -125,8 +125,47 @@ scalePath f { start, segments } =
   { start = scalePoint f start
   , segments = segments |> List.map (scaleSegment f) }
 
+movePoint : (Float, Float) -> Point -> Point 
+movePoint (xf, yf) { x, y } = 
+  { x = x * xf, y = y * yf }
+
+moveLine : (Float, Float) -> Line -> Line 
+moveLine f { lineTo } = 
+  { lineTo = movePoint f lineTo }
+
+moveCurve : (Float, Float) -> Curve -> Curve 
+moveCurve f { controlPoint1, controlPoint2, endPoint } = 
+  { controlPoint1 = movePoint f controlPoint1
+  , controlPoint2 = movePoint f controlPoint2 
+  , endPoint = movePoint f endPoint }
+
+moveSegment : (Float, Float) -> PathSegment -> PathSegment
+moveSegment f ps = 
+  case ps of 
+    LineSegment ls -> LineSegment (moveLine f ls)
+    CurveSegment cs -> CurveSegment (moveCurve f cs)
+
+movePath : (Float, Float) -> PathDef -> PathDef 
+movePath f { start, segments } = 
+  { start = movePoint f start
+  , segments = segments |> List.map (moveSegment f) }
+
 toRect : (Int, Int) -> LiveCell -> Svg.Svg msg
 toRect (w, h) cell = 
+  case cell of 
+    (xval, yval) -> 
+      let 
+        xpos = xval * w 
+        ypos = yval * h 
+      in 
+        Svg.rect [ x (toString xpos)
+                 , y (toString ypos)
+                 , width (toString w)
+                 , height (toString h)
+                 , fill "black" ] []
+
+toSvg : (Int, Int) -> LiveCell -> Svg.Svg msg
+toSvg (w, h) cell = 
   case cell of 
     (xval, yval) -> 
       let 
