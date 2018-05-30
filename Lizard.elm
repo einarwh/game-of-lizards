@@ -16,9 +16,10 @@ lineto : Point -> PathSegment
 lineto p = 
   LineSegment { targetPoint = p }
 
-lizard : PathDef
-lizard = 
-  { start = pt 0 0 
+lizardBody : PathDef
+lizardBody = 
+  { start = pt 0 0
+  , closed = True 
   , segments = [
       curveto (pt 0.020 0.050) (pt 0.030 0.120) (pt 0.025 0.185)
     , curveto (pt 0.080 0.120) (pt 0.200 0.105) (pt 0.310 0.090)
@@ -47,3 +48,24 @@ lizard =
     , curveto (pt -0.105 0.200) (pt -0.120 0.080) (pt -0.185 0.025)
     , curveto (pt -0.120 0.030) (pt -0.050 0.020) (pt 0.000 0.000)
     ] }
+
+spine : PathDef 
+spine = 
+  { start = pt 0.090 1.000
+  , closed = False 
+  , segments = [
+      lineto  (pt 0.270 1.000)
+    , curveto (pt 0.740 1.000) (pt 0.645 0.480) (pt 0.350 -0.210) ] }
+
+lowerEye : CircleDef 
+lowerEye = { center = (pt 0.270 0.880), radius = 1 }
+
+upperEye : CircleDef 
+upperEye = { center = (pt 0.270 1.120), radius = 1 }
+
+lizard : List Shape 
+lizard = 
+  [ PathShape lizardBody
+  , PathShape spine
+  , CircleShape lowerEye
+  , CircleShape upperEye ]

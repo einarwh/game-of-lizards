@@ -17,10 +17,10 @@ main =
 type alias LiveCell = (Int, Int)
 type alias Model = List LiveCell
 type alias Directions = 
-  { north : PathDef
-  , west : PathDef 
-  , south : PathDef 
-  , east : PathDef }
+  { north : Figure
+  , west : Figure 
+  , south : Figure 
+  , east : Figure }
 
 cellSize : (Float, Float) 
 cellSize = (20, 20)
@@ -136,36 +136,51 @@ withSegment fn ps =
     CurveSegment cs -> CurveSegment (withCurve fn cs)
 
 withPath : (Point -> Point) -> PathDef -> PathDef 
-withPath fn { start, segments } = 
+withPath fn { start, segments, closed } = 
   { start = fn start
-  , segments = segments |> List.map (withSegment fn) }
+  , segments = segments |> List.map (withSegment fn)
+  , closed = closed }
 
-movePath : (Float, Float) -> PathDef -> PathDef 
-movePath f =
-  withPath (movePoint f)
+withCircle : (Point -> Point) -> CircleDef -> CircleDef
+withCircle fn { center, radius } = 
+  { center = fn center
+  , radius = radius }
 
-scalePath : (Float, Float) -> PathDef -> PathDef 
-scalePath f = 
-  withPath (scalePoint f)
+withShape : (Point -> Point) -> Shape -> Shape
+withShape fn shape = 
+  case shape of 
+    CircleShape c -> CircleShape (withCircle fn c)
+    PathShape p -> PathShape (withPath fn p)
 
-turnPath : PathDef -> PathDef 
-turnPath = withPath turnPoint 
+withFigure : (Point -> Point) -> Figure -> Figure
+withFigure fn = List.map (withShape fn)
+
+moveFigure : (Float, Float) -> Figure -> Figure 
+moveFigure f =
+  withFigure (movePoint f)
+
+scaleFigure : (Float, Float) -> Figure -> Figure 
+scaleFigure f = 
+  withFigure (scalePoint f)
+
+turnFigure : Figure -> Figure  
+turnFigure = withFigure turnPoint 
 
 mirrorPoint : Int -> Point -> Point 
 mirrorPoint ymax {x, y} = 
   {x = x, y = toFloat ymax - y}
   
-mirrorPath : Int -> PathDef -> PathDef 
-mirrorPath ymax = 
-  withPath (mirrorPoint ymax)
+mirrorFigure : Int -> Figure -> Figure 
+mirrorFigure ymax = 
+  withFigure (mirrorPoint ymax)
 
 lizards : Directions
 lizards = 
   let 
-    lz1 = lizard |> scalePath cellSize 
-    lz2 = lizard |> turnPath |> scalePath cellSize 
-    lz3 = lizard |> turnPath |> turnPath |> scalePath cellSize 
-    lz4 = lizard |> turnPath |> turnPath |> turnPath |> scalePath cellSize  
+    lz1 = lizard |> scaleFigure cellSize 
+    lz2 = lizard |> turnFigure |> scaleFigure cellSize 
+    lz3 = lizard |> turnFigure |> turnFigure |> scaleFigure cellSize 
+    lz4 = lizard |> turnFigure |> turnFigure |> turnFigure |> scaleFigure cellSize  
   in
     { north = lz1 
     , west = lz2 
@@ -187,7 +202,7 @@ toRect (w, h) cell =
                  , fill "black" ] []
 
 pathToSvg : PathDef -> Svg.Svg msg 
-pathToSvg { start, segments } =
+pathToSvg { start, segments, closed } =
   let 
     toStr : Point -> String 
     toStr {x, y} = 
@@ -211,15 +226,35 @@ pathToSvg { start, segments } =
     st = toStr start 
     segs : String
     segs = segments |> List.map segToStr |> String.join " "
-    dval = "M" ++ st ++ " " ++ segs ++ " Z"
+    dval = "M" ++ st ++ " " ++ segs
   in
     Svg.path 
       [ stroke "white"
       , strokeWidth "0.3"
-      , fill "black"
-      , d dval ] []  
+      , fill (if closed then "black" else "None")
+      , d (if closed then dval ++ " Z" else dval)] []  
 
-chooseLizard : (Int, Int) -> PathDef 
+circleToSvg : CircleDef -> Svg.Svg msg
+circleToSvg { center, radius } = 
+  case center of 
+    {x, y} -> 
+      Svg.circle 
+        [ fill "white"
+        , cx (toString x)
+        , cy (toString y)
+        , r (toString radius) ] []
+
+shapeToSvg : Shape -> Svg.Svg msg 
+shapeToSvg shape = 
+  case shape of 
+    CircleShape c -> circleToSvg c
+    PathShape p -> pathToSvg p 
+      
+figureToSvg : Figure -> List (Svg.Svg msg)
+figureToSvg shapes = 
+  shapes |> List.map shapeToSvg
+
+chooseLizard : (Int, Int) -> Figure 
 chooseLizard cellType = 
   case cellType of 
     (0, 0) -> lizards.north 
@@ -227,7 +262,7 @@ chooseLizard cellType =
     (0, 1) -> lizards.east 
     _ -> lizards.south 
 
-toSvg : (Float, Float) -> LiveCell -> Svg.Svg msg
+toSvg : (Float, Float) -> LiveCell -> List (Svg.Svg msg)
 toSvg (w, h) cell = 
   case cell of 
     (xval, yval) -> 
@@ -235,15 +270,15 @@ toSvg (w, h) cell =
         xpos = toFloat xval * w 
         ypos = toFloat yval * h 
         lz = chooseLizard (xval % 2, yval % 2)
-        movedLizard = movePath (xpos, ypos) lz |> mirrorPath 396
+        movedLizard = moveFigure (xpos, ypos) lz |> mirrorFigure 396
       in 
-        pathToSvg movedLizard
+        figureToSvg movedLizard
 
 view : Model -> Html Msg
 view model =
   let
     --foos = List.map (toRect (6, 6)) model 
-    elements = List.map (toSvg cellSize) model 
+    elements = List.concatMap (toSvg cellSize) model 
     cellCount = List.length model
     minY = findMinY model 
     maxY = findMaxY model 
