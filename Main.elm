@@ -16,6 +16,11 @@ main =
 
 type alias LiveCell = (Int, Int)
 type alias Model = List LiveCell
+type alias Directions = 
+  { north : PathDef
+  , west : PathDef 
+  , south : PathDef 
+  , east : PathDef }
 
 cellSize : (Float, Float) 
 cellSize = (20, 20)
@@ -33,7 +38,6 @@ copperhead =
   , (1,10), (4,10)
   , (1,11), (4,11)
   , (2,12), (3,12) ]
-
 
 translate : (Int, Int) -> LiveCell -> LiveCell 
 translate (xoffset, yoffset) (x, y) = 
@@ -90,7 +94,7 @@ update msg model =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-  Time.every (100 * Time.millisecond) (\_ -> Tick)
+  Time.every (350 * Time.millisecond) (\_ -> Tick)
 
 findMinY : List LiveCell -> Int 
 findMinY cells =
@@ -108,54 +112,65 @@ scalePoint : (Float, Float) -> Point -> Point
 scalePoint (xf, yf) { x, y } = 
   { x = x * xf, y = y * yf }
 
-scaleLine : (Float, Float) -> Line -> Line 
-scaleLine f { targetPoint } = 
-  { targetPoint = scalePoint f targetPoint }
-
-scaleCurve : (Float, Float) -> Curve -> Curve 
-scaleCurve f { controlPoint1, controlPoint2, endPoint } = 
-  { controlPoint1 = scalePoint f controlPoint1
-  , controlPoint2 = scalePoint f controlPoint2 
-  , endPoint = scalePoint f endPoint }
-
-scaleSegment : (Float, Float) -> PathSegment -> PathSegment
-scaleSegment f ps = 
-  case ps of 
-    LineSegment ls -> LineSegment (scaleLine f ls)
-    CurveSegment cs -> CurveSegment (scaleCurve f cs)
-
-scalePath : (Float, Float) -> PathDef -> PathDef 
-scalePath f { start, segments } = 
-  { start = scalePoint f start
-  , segments = segments |> List.map (scaleSegment f) }
-
 movePoint : (Float, Float) -> Point -> Point 
 movePoint (dx, dy) { x, y } = 
   { x = x + dx, y = y + dy }
 
-moveLine : (Float, Float) -> Line -> Line 
-moveLine f { targetPoint } = 
-  { targetPoint = movePoint f targetPoint }
+turnPoint : Point -> Point 
+turnPoint { x, y } = { x = 1 - y, y = x }
 
-moveCurve : (Float, Float) -> Curve -> Curve 
-moveCurve f { controlPoint1, controlPoint2, endPoint } = 
-  { controlPoint1 = movePoint f controlPoint1
-  , controlPoint2 = movePoint f controlPoint2 
-  , endPoint = movePoint f endPoint }
+withLine : (Point -> Point) -> Line -> Line 
+withLine fn { targetPoint } = 
+  { targetPoint = fn targetPoint }
 
-moveSegment : (Float, Float) -> PathSegment -> PathSegment
-moveSegment f ps = 
+withCurve : (Point -> Point) -> Curve -> Curve 
+withCurve fn { controlPoint1, controlPoint2, endPoint } = 
+  { controlPoint1 = fn controlPoint1
+  , controlPoint2 = fn controlPoint2 
+  , endPoint = fn endPoint }
+
+withSegment : (Point -> Point) -> PathSegment -> PathSegment
+withSegment fn ps = 
   case ps of 
-    LineSegment ls -> LineSegment (moveLine f ls)
-    CurveSegment cs -> CurveSegment (moveCurve f cs)
+    LineSegment ls -> LineSegment (withLine fn ls)
+    CurveSegment cs -> CurveSegment (withCurve fn cs)
+
+withPath : (Point -> Point) -> PathDef -> PathDef 
+withPath fn { start, segments } = 
+  { start = fn start
+  , segments = segments |> List.map (withSegment fn) }
 
 movePath : (Float, Float) -> PathDef -> PathDef 
-movePath f { start, segments } = 
-  { start = movePoint f start
-  , segments = segments |> List.map (moveSegment f) }
+movePath f =
+  withPath (movePoint f)
 
-scaledLizard : PathDef 
-scaledLizard = scalePath cellSize lizard
+scalePath : (Float, Float) -> PathDef -> PathDef 
+scalePath f = 
+  withPath (scalePoint f)
+
+turnPath : PathDef -> PathDef 
+turnPath = withPath turnPoint 
+
+mirrorPoint : Int -> Point -> Point 
+mirrorPoint ymax {x, y} = 
+  {x = x, y = toFloat ymax - y}
+  
+mirrorPath : Int -> PathDef -> PathDef 
+mirrorPath ymax = 
+  withPath (mirrorPoint ymax)
+
+lizards : Directions
+lizards = 
+  let 
+    lz1 = lizard |> scalePath cellSize 
+    lz2 = lizard |> turnPath |> scalePath cellSize 
+    lz3 = lizard |> turnPath |> turnPath |> scalePath cellSize 
+    lz4 = lizard |> turnPath |> turnPath |> turnPath |> scalePath cellSize  
+  in
+    { north = lz1 
+    , west = lz2 
+    , south = lz3 
+    , east = lz4 }
 
 toRect : (Int, Int) -> LiveCell -> Svg.Svg msg
 toRect (w, h) cell = 
@@ -204,6 +219,14 @@ pathToSvg { start, segments } =
       , fill "black"
       , d dval ] []  
 
+chooseLizard : (Int, Int) -> PathDef 
+chooseLizard cellType = 
+  case cellType of 
+    (0, 0) -> lizards.north 
+    (1, 0) -> lizards.west
+    (0, 1) -> lizards.east 
+    _ -> lizards.south 
+
 toSvg : (Float, Float) -> LiveCell -> Svg.Svg msg
 toSvg (w, h) cell = 
   case cell of 
@@ -211,7 +234,8 @@ toSvg (w, h) cell =
       let 
         xpos = toFloat xval * w 
         ypos = toFloat yval * h 
-        movedLizard = movePath (xpos, ypos) scaledLizard
+        lz = chooseLizard (xval % 2, yval % 2)
+        movedLizard = movePath (xpos, ypos) lz |> mirrorPath 396
       in 
         pathToSvg movedLizard
 
