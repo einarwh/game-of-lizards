@@ -94,7 +94,7 @@ update msg model =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-  Time.every (350 * Time.millisecond) (\_ -> Tick)
+  Time.every (500 * Time.millisecond) (\_ -> Tick)
 
 findMinY : List LiveCell -> Int 
 findMinY cells =
@@ -285,7 +285,7 @@ view model =
   in
     div [] [
       svg [ viewBox "0 0 396 396", width "600px" ] elements
-    , div [] [ text (toString cellCount) ]
-    , div [] [ text (toString minY) ]
-    , div [] [ text (toString maxY) ]
+--    , div [] [ text (toString cellCount) ]
+--    , div [] [ text (toString minY) ]
+--    , div [] [ text (toString maxY) ]
     ]

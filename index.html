@@ -8780,11 +8780,15 @@ var _user$project$Lizard$lizard = {
 	_0: _user$project$Shape$PathShape(_user$project$Lizard$lizardBody),
 	_1: {
 		ctor: '::',
-		_0: _user$project$Shape$CircleShape(_user$project$Lizard$lowerEye),
+		_0: _user$project$Shape$PathShape(_user$project$Lizard$spine),
 		_1: {
 			ctor: '::',
-			_0: _user$project$Shape$CircleShape(_user$project$Lizard$upperEye),
-			_1: {ctor: '[]'}
+			_0: _user$project$Shape$CircleShape(_user$project$Lizard$lowerEye),
+			_1: {
+				ctor: '::',
+				_0: _user$project$Shape$CircleShape(_user$project$Lizard$upperEye),
+				_1: {ctor: '[]'}
+			}
 		}
 	}
 };
@@ -9374,43 +9378,7 @@ var _user$project$Main$view = function (model) {
 					}
 				},
 				elements),
-			_1: {
-				ctor: '::',
-				_0: A2(
-					_elm_lang$html$Html$div,
-					{ctor: '[]'},
-					{
-						ctor: '::',
-						_0: _elm_lang$svg$Svg$text(
-							_elm_lang$core$Basics$toString(cellCount)),
-						_1: {ctor: '[]'}
-					}),
-				_1: {
-					ctor: '::',
-					_0: A2(
-						_elm_lang$html$Html$div,
-						{ctor: '[]'},
-						{
-							ctor: '::',
-							_0: _elm_lang$svg$Svg$text(
-								_elm_lang$core$Basics$toString(minY)),
-							_1: {ctor: '[]'}
-						}),
-					_1: {
-						ctor: '::',
-						_0: A2(
-							_elm_lang$html$Html$div,
-							{ctor: '[]'},
-							{
-								ctor: '::',
-								_0: _elm_lang$svg$Svg$text(
-									_elm_lang$core$Basics$toString(maxY)),
-								_1: {ctor: '[]'}
-							}),
-						_1: {ctor: '[]'}
-					}
-				}
-			}
+			_1: {ctor: '[]'}
 		});
 };
 var _user$project$Main$Directions = F4(
@@ -9421,7 +9389,7 @@ var _user$project$Main$Tick = {ctor: 'Tick'};
 var _user$project$Main$subscriptions = function (model) {
 	return A2(
 		_elm_lang$core$Time$every,
-		350 * _elm_lang$core$Time$millisecond,
+		500 * _elm_lang$core$Time$millisecond,
 		function (_p69) {
 			return _user$project$Main$Tick;
 		});
